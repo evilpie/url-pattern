@@ -11,12 +11,22 @@ mod tokenizer;
 use crate::parser::{Modifier, Parser, Part};
 use crate::tokenizer::{tokenize, Policy};
 
+use thiserror::Error;
+
 /// <https://urlpattern.spec.whatwg.org/#options>
 #[derive(Default, Clone)]
 pub struct Options {
     pub delimiter: Option<char>,
     pub prefix: Option<char>,
     pub ignore_case: bool,
+}
+
+#[derive(Error, Debug)]
+pub enum ParseError {
+    #[error("unexpected end of pattern reached")]
+    UnexpectedEnd,
+    #[error("missing one or more closing parentheses in regular expression")]
+    ParenthesesMissmatch,
 }
 
 /// https://urlpattern.spec.whatwg.org/#generate-a-segment-wildcard-regexp
@@ -130,19 +140,18 @@ fn generate_regexp(parts: &[Part], opts: &Options) -> String {
     }
 
     result.push('$');
-
     result
 }
 
 /// Parses a pattern string and returns a regular expression for matching that
 /// pattern.
-pub fn regexp_for_pattern(input: &str, options: &Options) -> String {
-    let tokens = tokenize(input, Policy::Strict);
+pub fn regexp_for_pattern(input: &str, options: &Options) -> Result<String, ParseError> {
+    let tokens = tokenize(input, Policy::Strict)?;
 
     let mut parser = Parser::new(&tokens, options);
-    parser.parse();
+    parser.parse()?;
 
-    generate_regexp(&parser.parts, options)
+    Ok(generate_regexp(&parser.parts, options))
 }
 
 #[cfg(test)]
@@ -212,7 +221,10 @@ mod tests {
             ignore_case: false,
         };
 
-        assert_eq!(regexp_for_pattern("{a:foo(bar)b}?", &opts), r"^(?:a(bar)b)?$");
+        assert_eq!(
+            regexp_for_pattern("{a:foo(bar)b}?", &opts),
+            r"^(?:a(bar)b)?$"
+        );
         assert_eq!(regexp_for_pattern("{:foo}?", &opts), r"^([^\/]+?)?$");
         assert_eq!(regexp_for_pattern("{(bar)}?", &opts), "^(bar)?$");
         assert_eq!(regexp_for_pattern("{ab}?", &opts), r"^(?:ab)?$");

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+use crate::ParseError;
+
 /// https://urlpattern.spec.whatwg.org/#token
 #[derive(Clone, Debug)]
 pub(crate) enum Token {
@@ -21,7 +23,7 @@ pub(crate) enum Policy {
     _Lenient,
 }
 
-pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
+pub(crate) fn tokenize(input: &str, _policy: Policy) -> Result<Vec<Token>, ParseError> {
     let mut tokens = vec![];
 
     let mut iter = input.chars().peekable();
@@ -77,11 +79,15 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
                 while let Some(chr) = iter.next() {
                     if !chr.is_ascii() {
                         todo!();
-                        break;
                     }
 
                     // todo 3,4
+
                     match chr {
+                        '(' => {
+                            depth += 1
+                            // TODO!
+                        }
                         ')' => {
                             depth -= 1;
                             if depth == 0 {
@@ -96,7 +102,7 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
                 }
 
                 if depth != 0 {
-                    panic!("depth not zero");
+                    return Err(ParseError::ParenthesesMissmatch);
                 }
 
                 tokens.push(Token::RegExp(regexp))
@@ -109,6 +115,5 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
     }
 
     tokens.push(Token::End);
-
-    tokens
+    Ok(tokens)
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 use crate::tokenizer::Token;
-use crate::Options;
+use crate::{Options, ParseError};
 use std::fmt;
 
 #[derive(Debug)]
@@ -73,7 +73,7 @@ impl<'a> Parser<'_> {
     }
 
     // https://urlpattern.spec.whatwg.org/#parse-a-pattern-string
-    pub(crate) fn parse(&mut self) {
+    pub(crate) fn parse(&mut self) -> Result<(), ParseError> {
         loop {
             // 1. Let char token be the result of running try to consume a token given parser and "char".
             let char_token = self.try_consume_token(|token| matches!(token, Token::Char(_)));
@@ -174,11 +174,13 @@ impl<'a> Parser<'_> {
 
             // Run consume a required token given parser and "end".
             if let None = self.try_consume_token(|token| matches!(token, Token::End)) {
-                panic!("expected end");
+                return Err(ParseError::UnexpectedEnd);
             }
 
             break;
         }
+
+        Ok(())
     }
 
     fn consume_text(&mut self) -> String {

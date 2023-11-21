@@ -9,3 +9,4 @@ license = "MIT"
 repository = "https://github.com/evilpie/url-pattern"
 
 [dependencies]
+thiserror = "1.0.50"
