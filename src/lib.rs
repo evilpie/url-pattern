@@ -160,73 +160,49 @@ mod tests {
 
     // TODO: Verify that of all these results are correct!!
 
-    #[test]
-    fn smoke_test() {
+    fn test_path(pattern: &str, expected: &str) {
         let opts = Options {
             delimiter: Some('/'),
             prefix: Some('/'),
             ignore_case: false,
         };
 
-        let result = regexp_for_pattern("abc", &opts);
-        assert_eq!(result, "^abc$");
+        let result = regexp_for_pattern(pattern, &opts).unwrap();
+        assert_eq!(result, expected);
+    }
 
-        let result = regexp_for_pattern("{foo}", &opts);
-        assert_eq!(result, "^foo$");
-
-        let result = regexp_for_pattern("{bar}?", &opts);
-        assert_eq!(result, "^(?:bar)?$");
-
-        let result = regexp_for_pattern("/:bar", &opts);
-        assert_eq!(result, r"^(?:\/([^\/]+?))$");
-
-        let result = regexp_for_pattern("/:foo/:bar", &opts);
-        assert_eq!(result, r"^(?:\/([^\/]+?))(?:\/([^\/]+?))$");
-
-        let result = regexp_for_pattern("/:foo/:bar?", &opts);
-        assert_eq!(result, r"^(?:\/([^\/]+?))(?:\/([^\/]+?))?$");
-
-        let result = regexp_for_pattern("/:foo?/:bar?", &opts);
-        assert_eq!(result, r"^(?:\/([^\/]+?))?(?:\/([^\/]+?))?$");
-
-        let result = regexp_for_pattern("/:foo?/:bar", &opts);
-        assert_eq!(result, r"^(?:\/([^\/]+?))?(?:\/([^\/]+?))$");
+    #[test]
+    fn smoke_test() {
+        test_path("abc", "^abc$");
+        test_path("{foo}", "^foo$");
+        test_path("{bar}?", "^(?:bar)?$");
+        test_path("/:bar", r"^(?:\/([^\/]+?))$");
+        test_path("/:foo/:bar", r"^(?:\/([^\/]+?))(?:\/([^\/]+?))$");
+        test_path("/:foo/:bar?", r"^(?:\/([^\/]+?))(?:\/([^\/]+?))?$");
+        test_path("/:foo?/:bar?", r"^(?:\/([^\/]+?))?(?:\/([^\/]+?))?$");
+        test_path("/:foo?/:bar", r"^(?:\/([^\/]+?))?(?:\/([^\/]+?))$");
+        test_path("/:foo{/}?", r"^(?:\/([^\/]+?))(?:\/)?$");
     }
 
     #[test]
     fn parse_example_1() {
         // From https://urlpattern.spec.whatwg.org/#parse-example-1
-        let opts = Options {
-            delimiter: Some('/'),
-            prefix: Some('/'),
-            ignore_case: false,
-        };
-
-        assert_eq!(regexp_for_pattern("/:foo(bar)?", &opts), r"^(?:\/(bar))?$");
-        assert_eq!(regexp_for_pattern("/", &opts), r"^\/$");
-        assert_eq!(regexp_for_pattern(":foo", &opts), r"^([^\/]+?)$");
-        assert_eq!(regexp_for_pattern("(bar)", &opts), r"^(bar)$");
-        assert_eq!(regexp_for_pattern("/:foo", &opts), r"^(?:\/([^\/]+?))$");
-        assert_eq!(regexp_for_pattern("/(bar)", &opts), r"^(?:\/(bar))$");
-        assert_eq!(regexp_for_pattern("/:foo?", &opts), r"^(?:\/([^\/]+?))?$");
-        assert_eq!(regexp_for_pattern("/(bar)?", &opts), r"^(?:\/(bar))?$");
+        test_path("/:foo(bar)?", r"^(?:\/(bar))?$");
+        test_path("/", r"^\/$");
+        test_path(":foo", r"^([^\/]+?)$");
+        test_path("(bar)", r"^(bar)$");
+        test_path("/:foo", r"^(?:\/([^\/]+?))$");
+        test_path("/(bar)", r"^(?:\/(bar))$");
+        test_path("/:foo?", r"^(?:\/([^\/]+?))?$");
+        test_path("/(bar)?", r"^(?:\/(bar))?$");
     }
 
     #[test]
     fn parse_example_2() {
         // From https://urlpattern.spec.whatwg.org/#parsing-example-2
-        let opts = Options {
-            delimiter: Some('/'),
-            prefix: Some('/'),
-            ignore_case: false,
-        };
-
-        assert_eq!(
-            regexp_for_pattern("{a:foo(bar)b}?", &opts),
-            r"^(?:a(bar)b)?$"
-        );
-        assert_eq!(regexp_for_pattern("{:foo}?", &opts), r"^([^\/]+?)?$");
-        assert_eq!(regexp_for_pattern("{(bar)}?", &opts), "^(bar)?$");
-        assert_eq!(regexp_for_pattern("{ab}?", &opts), r"^(?:ab)?$");
+        test_path("{a:foo(bar)b}?", r"^(?:a(bar)b)?$");
+        test_path("{:foo}?", r"^([^\/]+?)?$");
+        test_path("{(bar)}?", "^(bar)?$");
+        test_path("{ab}?", r"^(?:ab)?$");
     }
 }
