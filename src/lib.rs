@@ -83,7 +83,19 @@ fn generate_regexp(parts: &[Part], opts: &Options) -> String {
                 escape_regexp(prefix),
                 escape_regexp(suffix),
             ),
-            Part::RegExp { .. } => todo!(),
+            Part::RegExp {
+                name,
+                value,
+                modifier,
+                prefix,
+                suffix,
+            } => (
+                name,
+                modifier,
+                value.clone(),
+                escape_regexp(prefix),
+                escape_regexp(suffix),
+            ),
         };
 
         // If part’s prefix is the empty string and part’s suffix is the empty string:
@@ -181,14 +193,14 @@ mod tests {
             ignore_case: false,
         };
 
-        // assert_eq!(regexp_for_pattern("/:foo(bar)?", &opts), "bla");
+        assert_eq!(regexp_for_pattern("/:foo(bar)?", &opts), r"^(?:\/(bar))?$");
         assert_eq!(regexp_for_pattern("/", &opts), r"^\/$");
         assert_eq!(regexp_for_pattern(":foo", &opts), r"^([^\/]+?)$");
-        // assert_eq!(regexp_for_pattern("(bar)", &opts), "bla");
+        assert_eq!(regexp_for_pattern("(bar)", &opts), r"^(bar)$");
         assert_eq!(regexp_for_pattern("/:foo", &opts), r"^(?:\/([^\/]+?))$");
-        // assert_eq!(regexp_for_pattern("/(bar)", &opts), "bla");
+        assert_eq!(regexp_for_pattern("/(bar)", &opts), r"^(?:\/(bar))$");
         assert_eq!(regexp_for_pattern("/:foo?", &opts), r"^(?:\/([^\/]+?))?$");
-        // assert_eq!(regexp_for_pattern("/(bar)?", &opts), "bla");
+        assert_eq!(regexp_for_pattern("/(bar)?", &opts), r"^(?:\/(bar))?$");
     }
 
     #[test]
@@ -200,9 +212,9 @@ mod tests {
             ignore_case: false,
         };
 
-        // assert_eq!(regexp_for_pattern("{a:foo(bar)b}?", &opts), r"^(?:a([^\/]+?)(bar)b)?$");
+        assert_eq!(regexp_for_pattern("{a:foo(bar)b}?", &opts), r"^(?:a(bar)b)?$");
         assert_eq!(regexp_for_pattern("{:foo}?", &opts), r"^([^\/]+?)?$");
-        // assert_eq!(regexp_for_pattern("{(bar)}?", &opts), "bla");
+        assert_eq!(regexp_for_pattern("{(bar)}?", &opts), "^(bar)?$");
         assert_eq!(regexp_for_pattern("{ab}?", &opts), r"^(?:ab)?$");
     }
 }

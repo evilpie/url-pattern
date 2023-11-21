@@ -33,7 +33,11 @@ pub(crate) enum Part {
         modifier: Option<Modifier>,
     },
     RegExp {
+        name: String,
         value: String,
+        modifier: Option<Modifier>,
+        prefix: String,
+        suffix: String,
     },
     SegmentWildcard {
         name: String,
@@ -326,6 +330,14 @@ impl<'a> Parser<'_> {
         } else if regexp_value == "<full wildcard>" {
             self.parts.push(Part::FullWildcard {
                 name,
+                modifier,
+                prefix,
+                suffix,
+            })
+        } else {
+            self.parts.push(Part::RegExp {
+                name,
+                value: regexp_value,
                 modifier,
                 prefix,
                 suffix,

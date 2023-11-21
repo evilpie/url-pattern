@@ -25,13 +25,7 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
     let mut tokens = vec![];
 
     let mut iter = input.chars().peekable();
-    loop {
-        let chr = if let Some(chr) = iter.next() {
-            chr
-        } else {
-            break;
-        };
-
+    while let Some(chr) = iter.next() {
         match chr {
             // If tokenizer’s code point is U+002A (*):
             '*' => {
@@ -66,6 +60,7 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
                 let mut name = String::new();
                 while let Some(chr) = iter.peek() {
                     match chr {
+                        // TODO: correct this.
                         'A'..='Z' | 'a'..='z' => name.push(iter.next().unwrap()),
                         _ => break,
                     }
@@ -74,7 +69,37 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
             }
             // 8. If tokenizer’s code point is U+0028 (():
             '(' => {
-                unimplemented!("RegExp token")
+                let mut depth = 1;
+
+                // TODO: this is totally not implemented.
+
+                let mut regexp = String::new();
+                while let Some(chr) = iter.next() {
+                    if !chr.is_ascii() {
+                        todo!();
+                        break;
+                    }
+
+                    // todo 3,4
+                    match chr {
+                        ')' => {
+                            depth -= 1;
+                            if depth == 0 {
+                                // Set regexp position to tokenizer’s next index.???
+                                break;
+                            }
+                        }
+                        _ => {}
+                    }
+
+                    regexp.push(chr);
+                }
+
+                if depth != 0 {
+                    panic!("depth not zero");
+                }
+
+                tokens.push(Token::RegExp(regexp))
             }
             _ => {
                 // TODO
