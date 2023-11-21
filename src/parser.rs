@@ -69,7 +69,7 @@ impl<'a> Parser<'_> {
     }
 
     // https://urlpattern.spec.whatwg.org/#parse-a-pattern-string
-    pub(crate) fn parse(&mut self,) {
+    pub(crate) fn parse(&mut self) {
         loop {
             // 1. Let char token be the result of running try to consume a token given parser and "char".
             let char_token = self.try_consume_token(|token| matches!(token, Token::Char(_)));

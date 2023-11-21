@@ -75,7 +75,7 @@ pub(crate) fn tokenize(input: &str, _policy: Policy) -> Vec<Token> {
             // 8. If tokenizer’s code point is U+0028 (():
             '(' => {
                 unimplemented!("RegExp token")
-            },
+            }
             _ => {
                 // TODO
                 tokens.push(Token::Char(chr));

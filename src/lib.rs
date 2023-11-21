@@ -16,12 +16,19 @@ use crate::tokenizer::{tokenize, Policy};
 pub struct Options {
     pub delimiter: Option<char>,
     pub prefix: Option<char>,
-    pub ignore_case: bool
+    pub ignore_case: bool,
 }
 
 /// https://urlpattern.spec.whatwg.org/#generate-a-segment-wildcard-regexp
 fn generate_segment_wildcard_regexp(opts: &Options) -> String {
-    format!("[^{}]+?", escape_regexp(&opts.delimiter.map_or_else(|| String::new(), |chr| chr.to_string())))
+    format!(
+        "[^{}]+?",
+        escape_regexp(
+            &opts
+                .delimiter
+                .map_or_else(|| String::new(), |chr| chr.to_string())
+        )
+    )
 }
 
 /// https://urlpattern.spec.whatwg.org/#full-wildcard-regexp-value
@@ -76,7 +83,7 @@ fn generate_regexp(parts: &[Part], opts: &Options) -> String {
                 escape_regexp(prefix),
                 escape_regexp(suffix),
             ),
-            Part::RegExp { .. } => todo!()
+            Part::RegExp { .. } => todo!(),
         };
 
         // If part’s prefix is the empty string and part’s suffix is the empty string:
@@ -114,7 +121,6 @@ fn generate_regexp(parts: &[Part], opts: &Options) -> String {
 
     result
 }
-
 
 /// Parses a pattern string and returns a regular expression for matching that
 /// pattern.
