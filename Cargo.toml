@@ -1,0 +1,10 @@
+[package]
+name = "url-pattern"
+version = "0.1.0"
+edition = "2021"
+authors = ["Tom Schuster <evilpies@gmail.com>"]
+description = """This is a VERY INCOMPLETE implementation of the WhatWG URL Pattern standard <https://https://urlpattern.spec.whatwg.org/>.
+Seriously DON'T USE THIS (yet)!"""
+license = "MIT"
+
+[dependencies]
