@@ -25,8 +25,10 @@ pub struct Options {
 pub enum ParseError {
     #[error("unexpected end of pattern reached")]
     UnexpectedEnd,
-    #[error("missing one or more closing parentheses in regular expression")]
+    #[error("missing one or more closing parentheses `)` in regular expression")]
     ParenthesesMissmatch,
+    #[error("missing closing curly brackets `}}`")]
+    MissingClosingCurly
 }
 
 /// https://urlpattern.spec.whatwg.org/#generate-a-segment-wildcard-regexp

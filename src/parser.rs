@@ -93,6 +93,7 @@ impl<'a> Parser<'_> {
                     Some(_) => panic!("unexpected token {:?}", char_token),
                     None => "".into(),
                 };
+
                 // 3. If prefix is not the empty string and not options’s prefix code point:
                 if !prefix.is_empty() {
                     if let Some(opt_prefix) = self.options.prefix {
@@ -156,7 +157,7 @@ impl<'a> Parser<'_> {
 
                 // Run consume a required token given parser and "close".
                 if let None = self.try_consume_token(|token| matches!(token, Token::Close)) {
-                    panic!("missing close token")
+                    return Err(ParseError::MissingClosingCurly);
                 }
 
                 // Set modifier token to the result of running try to consume a modifier token given parser.
