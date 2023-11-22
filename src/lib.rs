@@ -31,7 +31,7 @@ pub enum ParseError {
     MissingClosingCurly
 }
 
-/// https://urlpattern.spec.whatwg.org/#generate-a-segment-wildcard-regexp
+/// <https://urlpattern.spec.whatwg.org/#generate-a-segment-wildcard-regexp>
 fn generate_segment_wildcard_regexp(opts: &Options) -> String {
     format!(
         "[^{}]+?",
@@ -43,7 +43,7 @@ fn generate_segment_wildcard_regexp(opts: &Options) -> String {
     )
 }
 
-/// https://urlpattern.spec.whatwg.org/#full-wildcard-regexp-value
+/// <https://urlpattern.spec.whatwg.org/#full-wildcard-regexp-value>
 fn full_wildcard_regexp() -> &'static str {
     ".*"
 }
@@ -53,7 +53,7 @@ fn escape_regexp(str: &str) -> String {
     str.replace("/", "\\/")
 }
 
-/// https://urlpattern.spec.whatwg.org/#generate-a-regular-expression-and-name-list
+/// <https://urlpattern.spec.whatwg.org/#generate-a-regular-expression-and-name-list>
 fn generate_regexp(parts: &[Part], opts: &Options) -> String {
     let mut result: String = "^".into();
 

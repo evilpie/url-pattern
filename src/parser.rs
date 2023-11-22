@@ -72,7 +72,7 @@ impl<'a> Parser<'_> {
         }
     }
 
-    // https://urlpattern.spec.whatwg.org/#parse-a-pattern-string
+    /// <https://urlpattern.spec.whatwg.org/#parse-a-pattern-string>
     pub(crate) fn parse(&mut self) -> Result<(), ParseError> {
         loop {
             // 1. Let char token be the result of running try to consume a token given parser and "char".
@@ -218,7 +218,7 @@ impl<'a> Parser<'_> {
         Some(modifier)
     }
 
-    // https://urlpattern.spec.whatwg.org/#try-to-consume-a-regexp-or-wildcard-token
+    /// <https://urlpattern.spec.whatwg.org/#try-to-consume-a-regexp-or-wildcard-token>
     fn try_consume_regexp_or_wildcard(&mut self, name_token: Option<&Token>) -> Option<Token> {
         // 1. Let token be the result of running try to consume a token given parser and "regexp".
         let token = self.try_consume_token(|token| matches!(token, Token::RegExp(_)));
@@ -232,7 +232,7 @@ impl<'a> Parser<'_> {
         token
     }
 
-    /// https://urlpattern.spec.whatwg.org/#add-a-part
+    /// <https://urlpattern.spec.whatwg.org/#add-a-part>
     fn add_part(
         &mut self,
         prefix: String,

@@ -2,7 +2,7 @@
 
 use crate::ParseError;
 
-/// https://urlpattern.spec.whatwg.org/#token
+/// <https://urlpattern.spec.whatwg.org/#token>
 #[derive(Clone, Debug)]
 pub(crate) enum Token {
     Open,
@@ -11,13 +11,14 @@ pub(crate) enum Token {
     Name(String),
     Char(char),
     EscapedChar(char),
-    Plus,         // "other-modifier"
-    QuestionMark, // "other-modifier"
+    Plus,         /// a.k.a. "other-modifier"
+    QuestionMark, /// a.k.a. "other-modifier"
     Asterisk,
     End,
     InvalidChar,
 }
 
+/// <https://urlpattern.spec.whatwg.org/#tokenize-policy>
 pub(crate) enum Policy {
     Strict,
     _Lenient,
