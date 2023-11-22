@@ -57,7 +57,7 @@ pub(crate) struct Parser<'a> {
     tokens: &'a [Token],
     options: &'a Options,
     index: usize,
-    pub(crate) pending_fixed_value: String,
+    pending_fixed_value: String,
     pub(crate) parts: Vec<Part>,
 }
 
